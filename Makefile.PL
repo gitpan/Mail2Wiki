@@ -16,10 +16,28 @@ my %WriteMakefileArgs = (
     "ExtUtils::MakeMaker" => "6.30"
   },
   "DISTNAME" => "Mail2Wiki",
-  "EXE_FILES" => [],
+  "EXE_FILES" => [
+    "bin/mail2wiki.pl"
+  ],
   "LICENSE" => "bsd",
   "NAME" => "Mail2Wiki",
-  "PREREQ_PM" => {},
+  "PREREQ_PM" => {
+    "Digest::MD5" => 0,
+    "Email::MIME" => 0,
+    "Encode" => 0,
+    "File::Slurp" => 0,
+    "FindBin" => 0,
+    "Module::Runtime" => 0,
+    "Mojo::DOM" => 0,
+    "Mojo::UserAgent" => 0,
+    "Mojo::Util" => 0,
+    "Moose" => 0,
+    "Net::IMAP::Client" => 0,
+    "Time::Piece" => 0,
+    "YAML::XS" => 0,
+    "base" => 0,
+    "utf8" => 0
+  },
   "TEST_REQUIRES" => {},
   "VERSION" => "0.001",
   "test" => {

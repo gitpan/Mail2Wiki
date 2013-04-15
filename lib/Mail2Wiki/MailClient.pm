@@ -1,6 +1,6 @@
 package Mail2Wiki::MailClient;
 use Moose;
-use Net::IMAP::Simple::SSL;
+use Net::IMAP::Client;
 use Email::MIME;
 use File::Slurp;
 use Mail2Wiki::Mail;
@@ -15,14 +15,14 @@ has data_dir => (is => 'ro', isa => 'Str', default => 'data/');
 
 has imap => (
   is      => 'ro',
-  isa     => 'Net::IMAP::Simple::SSL',
+  isa     => 'Net::IMAP::Client',
   lazy    => 1,
   default => sub {
     my $self = shift;
-    my $imap = Net::IMAP::Simple::SSL->new(
-      $self->server,
+    my $imap = Net::IMAP::Client->new(
+      server => $self->server,
       port    => $self->port,
-      timeout => 10
+      ssl     => 1,
     ) or die $Net::IMAP::Simple::errstr, "\n";
     $imap->login($self->user, $self->pass)
       or die "Login-to MailServer failed: ", $imap->errstr, "\n";
@@ -41,10 +41,10 @@ has mail => (
 sub dump {
   my $self = shift;
   $self->imap->select('INBOX');
-  my @all_msg = $self->imap->search_unseen('ALL');
-  foreach (@all_msg) {
-    my $msg = $self->imap->get($_);
-    my $mail = Email::MIME->new(join '', @{$msg})
+  my $all_msg = $self->imap->search('UNSEEN','','US-ASCII');
+  foreach (@$all_msg) {
+    my $msg = $self->imap->get_rfc822_body($_);
+    my $mail = Email::MIME->new($msg)
       or die "Create mail failed !!\n";
     my ($subject, $files, $content, $poster)
       = _dump_mail($self->data_dir, $mail);
