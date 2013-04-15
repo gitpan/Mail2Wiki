@@ -1,0 +1,15 @@
+# mail settings
+
+mail_server : mail.alibaba-inc.com
+mail_port   : 933
+mail_user   : user
+mail_pass   : password
+
+# Wiki settings
+
+wiki_type   : MindTouch
+wiki_domain : x.wf.taobao.org
+wiki_user   : user
+wiki_pass   : password
+#wiki_prefix : PE/mail
+wiki_prefix : User

@@ -1,0 +1,14 @@
+Mail2Wiki
+=========
+
+Fetch Your Email from EmailServer, then Upload it to Your Wiki !
+
+Detail
+========
+
+- Use IMAP Protocol Connect to Your EmailServer
+
+- Support MindTouch by now
+
+
+¢Chinaxing(陈云星)
