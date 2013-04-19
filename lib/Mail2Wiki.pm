@@ -77,7 +77,7 @@ sub publish {
         content => $m->content,
         poster  => $m->poster,
       );
-    } or warn " post failed of : ", Encode::encode('utf8', $m->subject), "\n";
+    } or warn " post failed of : ", Encode::encode('utf8', $m->subject), ": $@ \n";
   }
 }
 

@@ -8,7 +8,7 @@ Detail
 
 - Use IMAP Protocol Connect to Your EmailServer
 
-- Support MindTouch by now
+- Support MindTouch by now( You can add other support, eg : MediaWiki )
 
 
 ¢Chinaxing(陈云星)
