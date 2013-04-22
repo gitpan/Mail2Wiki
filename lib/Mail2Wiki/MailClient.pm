@@ -84,12 +84,12 @@ sub _dump_mail {
       elsif ($part->content_type =~ m[text/html]i) {
         my $charset = $1
           if $part->content_type =~ m/charset="([^"]+)"/ ? $1 : 'utf-8';
-        write_file "${dir}testtest", $part->body;
+#        write_file "${dir}testtest", $part->body;
         $content
           = $charset eq 'utf-8'
           ? $part->body
-          : encode('utf-8', decode($charset, $part->body, Encode::FB_CROAK),
-          Encode::FB_CROAK);
+          : encode('utf-8', decode($charset, $part->body, Encode::FB_WARN),
+          Encode::FB_WARN);
       }
     }
   );

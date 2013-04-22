@@ -7,6 +7,13 @@ README.mkd
 bin/mail2wiki.pl
 config
 config.public.gpg
+data/image005.png
+data/image014.jpg
+data/image015.jpg
+data/image016.jpg
+data/image017.jpg
+data/image018.jpg
+data/testtest
 data/x
 dist.ini
 lib/Mail2Wiki.pm
