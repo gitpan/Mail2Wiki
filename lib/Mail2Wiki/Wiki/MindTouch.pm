@@ -6,6 +6,7 @@ use Mojo::UserAgent;
 use Mojo::DOM;
 use Mojo::Util 'url_escape';
 
+use Mail2Wiki::Utils;
 use File::Slurp;
 use Digest::MD5 'md5_hex';
 use Encode;
@@ -77,16 +78,15 @@ sub post {
   # post file
   my $t;
   my $pid = $self->_post_page($subject, \$t);
-  warn " -- the page id is : ", $pid, "\n";
+  debug "the page id is : " . $pid;
   my %file_link;
   foreach my $f (@$file) {
-    my ($file_id, $file_path) = @$f;
+    my $file_path = pop @$f;
 
-    warn " -- post file : ", $file_path, ", id : ", $file_id, "\n";
-
+    debug "post file : " . $file_path;
     my $flink = $self->_post_file($file_path, $pid);
 
-    $content =~ s/(<img .*? src=")cid:\Q$file_id\E"/$1$flink"/g;
+    $content =~ s/(<img .*? src=")cid:\Q$f->[0]\E"/$1$flink"/g if $f->[0];
   }
 
   # post content
@@ -103,9 +103,7 @@ sub _post_file {
   my $tx = $self->ua->put($url, $file_content);
   if (my $res = $tx->success) {
     my $fid = $res->dom->file->{id};
-
-    warn " -- post file ok : ", $file, ", id : ", $fid, "\n";
-
+    debug "post file ok : " . $file . ",file id : " . $fid;
     return $res->dom->file->contents->{href};    # file_link
   }
   die "post file failed : ", $file, "\n";
@@ -122,29 +120,31 @@ sub _post_page {
     $url = $self->create_page_api =~ s/=foo/=$title/r;
   }
 
-#  warn " -- url is : ", $url, "\n";
-
 # drop html and body tag
 # content strip "<meta content="MSHTML 9.00.8112.16470" name="GENERATOR"/> <style></style> <style></style> <style></style>"
   if ($$content) {
-    my $dm = $self->dom->parse($$content)->html->body->children;
-    $dm->each(
-      sub {
-        my $el = shift;
-        $el->find('meta')->each(sub  { shift->remove });
-        $el->find('style')->each(sub { shift->remove });
-      }
-    );
-    $$content = "$dm";
+    my $bd = $self->dom->parse($$content)->find("html > body")->first;
+    if ($bd) {
+      $bd->children->each(
+        sub {
+          my $el = shift;
+          $el->find('meta')->each(sub  { shift->remove });
+          $el->find('style')->each(sub { shift->remove });
+        }
+      );
+
+      $$content = "$bd";
+    }
   }
 
-  write_file "data/hello.html", $$content;
-  my $tx = $self->ua->post($url,
-    {'Content-Type' => "application/x-www-form-urlencoded"}, $$content,);
+  my $tx = $self->ua->post(
+    $url, {'Content-Type' => "application/x-www-form-urlencoded"},
+    charset => 'utf8',
+    $$content
+  );
   if (my $res = $tx->success) {
     my $pid = $res->dom->edit->page->{id};
-    warn " -- post page ok : ", encode('utf8', $subject), ", id : ", $pid,
-      "\n";
+    debug "post page ok : " . encode('utf8', $subject) . ",page id : " . $pid;
     return $pid;
   }
   die "post page failed :", $subject, ", tx:", $tx->error, "\n";

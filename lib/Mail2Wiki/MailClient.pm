@@ -4,7 +4,7 @@ use Net::IMAP::Client;
 use Email::MIME;
 use File::Slurp;
 use Mail2Wiki::Mail;
-use Encode qw/encode decode/;
+use Mail2Wiki::Utils;
 use utf8;
 
 has server   => (is => 'ro', isa => 'Str', default => '127.0.0.1');
@@ -21,8 +21,8 @@ has imap => (
     my $self = shift;
     my $imap = Net::IMAP::Client->new(
       server => $self->server,
-      port    => $self->port,
-      ssl     => 1,
+      port   => $self->port,
+      ssl    => 1,
     ) or die $Net::IMAP::Simple::errstr, "\n";
     $imap->login($self->user, $self->pass)
       or die "Login-to MailServer failed: ", $imap->errstr, "\n";
@@ -40,12 +40,11 @@ has mail => (
 
 sub dump {
   my $self = shift;
-  $self->imap->select('INBOX');
-  my $all_msg = $self->imap->search('UNSEEN','','US-ASCII');
+  $self->imap->select($ENV{MAIL2WIKI_DEBUG} ? 'test' : 'INBOX');
+  my $all_msg = $self->imap->search('UNSEEN', '', 'US-ASCII');
   foreach (@$all_msg) {
     my $msg = $self->imap->get_rfc822_body($_);
-    my $mail = Email::MIME->new($msg)
-      or die "Create mail failed !!\n";
+    my $mail = Email::MIME->new($msg) or die "Create mail failed !!\n";
     my ($subject, $files, $content, $poster)
       = _dump_mail($self->data_dir, $mail);
     $self->add_mail(
@@ -64,35 +63,33 @@ sub _dump_mail {
   my ($dir, $mail) = @_;
   my $subject = $mail->header('Subject');
   my ($poster) = $mail->header('From') =~ m/<([^@]+)@/;
-  my (@file, $content);
+  my (@file, $content, $content_plain);
   $mail->walk_parts(
     sub {
       my ($part) = @_;
-      if (my @subpart = $part->subparts) {
-        warn "multipart\n";
-        foreach my $p (@subpart) {
-          warn "content-type is :", $p->content_type, ", \n";
-          if ($p->content_type =~ m[image/]i) {
-            my ($file) = $p->content_type =~ m[name="(.*)"];
-            my $file_id = substr($p->header("Content-ID"), 1, -1);
-            warn "file is: $file", ",id : ", $file_id, "\n";
-            write_file("$dir$file", {binmode => ':raw'}, $p->body);
-            push @file, [$file_id => "$dir$file"];
-          }
-        }
+      return $part if $part->subparts;
+
+      if ($part->content_type =~ m[text/html]i) {
+        $content = $part->body_str;
       }
-      elsif ($part->content_type =~ m[text/html]i) {
-        my $charset = $1
-          if $part->content_type =~ m/charset="([^"]+)"/ ? $1 : 'utf-8';
-#        write_file "${dir}testtest", $part->body;
-        $content
-          = $charset eq 'utf-8'
-          ? $part->body
-          : encode('utf-8', decode($charset, $part->body, Encode::FB_WARN),
-          Encode::FB_WARN);
+      elsif ($part->content_type =~ m[text/plain]i) {
+        $content_plain = $part->body_str;
+      }
+      elsif (my $filename = $part->filename) {
+        debug "store file : $filename";
+        write_file("$dir$filename", {binmode => ':raw'}, $part->body);
+        if (my $file_id = $part->header("Content-ID")) {
+          $file_id = substr($file_id, 1, -1);
+          debug "file id: " . $file_id;
+          push @file, [$file_id => "$dir$filename"];
+        }
+        else {
+          push @file, ["$dir$filename"];
+        }
       }
     }
   );
+  $content = $content_plain unless $content;
   return $subject, \@file, \$content, $poster;
 }
 
