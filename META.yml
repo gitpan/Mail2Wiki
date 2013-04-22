@@ -28,4 +28,4 @@ requires:
   YAML::XS: 0
   base: 0
   utf8: 0
-version: 0.004
+version: 0.005
