@@ -81,12 +81,14 @@ sub post {
   debug "the page id is : " . $pid;
   my %file_link;
   foreach my $f (@$file) {
+
+#      $DB::single = 1;
     my $file_path = pop @$f;
 
     debug "post file : " . $file_path;
     my $flink = $self->_post_file($file_path, $pid);
 
-    $content =~ s/(<img .*? src=")cid:\Q$f->[0]\E"/$1$flink"/g if $f->[0];
+    $content =~ s/(<img .*? src=")cid:\Q$f->[0]\E"/$1$flink"/sg if $f->[0];
   }
 
   # post content
@@ -133,21 +135,21 @@ sub _post_page {
         }
       );
 
-      $$content = "$bd";
+      $$content = encode('utf8', "$bd");
     }
   }
-
   my $tx = $self->ua->post(
-    $url, {'Content-Type' => "application/x-www-form-urlencoded"},
-    charset => 'utf8',
-    $$content
+    $url,
+    {'Content-Type' => "application/x-www-form-urlencoded"},
+    $$content // "",
   );
   if (my $res = $tx->success) {
     my $pid = $res->dom->edit->page->{id};
     debug "post page ok : " . encode('utf8', $subject) . ",page id : " . $pid;
     return $pid;
   }
-  die "post page failed :", $subject, ", tx:", $tx->error, "\n";
+  die "post page failed :", encode('utf8', $subject), ", tx:", $tx->error,
+    "\n";
 }
 
 sub _build_title {

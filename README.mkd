@@ -10,5 +10,33 @@ Detail
 
 - Support MindTouch by now( You can add other support, eg : MediaWiki )
 
+How to use 
+==========
 
+- config account of Mail and wiki to a config file ``config``  
+  such as:
+
+      # mail settings
+      mail_server : mail.example.com
+      mail_port   : 993
+      mail_user   : user
+      mail_pass   : password
+
+      # Wiki settings
+      wiki_type   : MindTouch
+      wiki_domain : x.wf.taobao.org
+      wiki_user   : wikiuser
+      wiki_pass   : userpassword
+      wiki_prefix : PE/mail
+      #wiki_prefix : User # means User/<mailsender> but not contain the @xxx.com part
+      
+- then run the script ``mail2wiki.pl`` in ``bin`` directory  
+
+       bin/mail2wiki.pl
+
+  the script will fetch mail with flag *"UNSEEN"* in Mail Folder *"INBOX"*,  
+  then post them to wiki, if they have been posted, the post will be failure.
+
+
+==================
 ¢Chinaxing(陈云星)
