@@ -5,7 +5,7 @@ use utf8;
 
 my $DEBUG ||= $ENV{MAIL2WIKI_DEBUG};
 
-our @EXPORT = qw/log debug/;
+our @EXPORT = qw/logger debug/;
 
 sub logger {
   my $level = "info";

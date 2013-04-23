@@ -100,7 +100,8 @@ sub _post_file {
   my ($self, $file, $page_id) = @_;
   my ($file_name) = $file =~ m[/([^/]+)$];
   my $url = $self->create_file_api =~ s/=foo/$page_id/r;
-  $url =~ s/=bar/=$file_name/;
+  my $filename_encoded = _double_url_escape(encode('utf8', $file_name));
+  $url =~ s/=bar/=$filename_encoded/;
   my $file_content = read_file($file, {binmode => ':raw'});
   my $tx = $self->ua->put($url, $file_content);
   if (my $res = $tx->success) {
@@ -135,7 +136,7 @@ sub _post_page {
         }
       );
 
-      $$content = encode('utf8', "$bd");
+      $$content = encode('utf8', $bd->children);
     }
   }
   my $tx = $self->ua->post(
@@ -152,6 +153,10 @@ sub _post_page {
     "\n";
 }
 
+sub _double_url_escape {
+  url_escape(url_escape(shift));
+}
+
 sub _build_title {
   my ($self, $subject) = @_;
   $subject =~ s/^.*Re: *//ui;
@@ -161,6 +166,8 @@ sub _build_title {
     = $self->prefix eq "User"
     ? "User:" . $self->poster . '/'
     : $self->prefix . '/';
-  url_escape(url_escape($prefix . encode('utf8', $subject)));
+  _double_url_escape($prefix . encode('utf8', $subject));
 }
+
+
 1;

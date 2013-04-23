@@ -75,7 +75,7 @@ sub _dump_mail {
       elsif ($part->content_type =~ m[text/plain]i) {
         $content_plain = $part->body_str;
       }
-      elsif (my $filename = $part->filename) {
+      elsif (my $filename = $part->filename =~ s/^\s+|\s+$//r) {
         debug "store file : $filename";
         write_file("$dir$filename", {binmode => ':raw'}, $part->body);
         if (my $file_id = $part->header("Content-ID")) {

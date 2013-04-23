@@ -4,6 +4,7 @@ use Moose;
 use YAML::XS 'LoadFile';
 use Module::Runtime 'use_module';
 use File::Slurp;
+use Mail2Wiki::Utils;
 use Mail2Wiki::MailClient;
 use Mail2Wiki::Wiki;
 use Encode ();
@@ -77,7 +78,7 @@ sub publish {
         content => $m->content,
         poster  => $m->poster,
       );
-    } or warn " post failed of : ", Encode::encode('utf8', $m->subject), ": $@ \n";
+    } or logger('warn'," post failed of : " . Encode::encode('utf8', $m->subject) . ": $@ \n");
   }
 }
 
