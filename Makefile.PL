@@ -25,9 +25,10 @@ my %WriteMakefileArgs = (
     "Digest::MD5" => 0,
     "Email::MIME" => 0,
     "Encode" => 0,
-    "Exporter" => 0,
     "File::Slurp" => 0,
     "FindBin" => 0,
+    "Log::Any" => 0,
+    "Log::Any::App" => 0,
     "Module::Runtime" => 0,
     "Mojo::DOM" => 0,
     "Mojo::UserAgent" => 0,
@@ -40,7 +41,7 @@ my %WriteMakefileArgs = (
     "utf8" => 0
   },
   "TEST_REQUIRES" => {},
-  "VERSION" => "0.008",
+  "VERSION" => "0.009",
   "test" => {
     "TESTS" => ""
   }

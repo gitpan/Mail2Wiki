@@ -7,25 +7,9 @@ README.mkd
 bin/mail2wiki.pl
 config
 config.public.gpg
-'data/ 2013天猫新风尚－活动评估报告.pptx'
-data/2013天猫新风尚－活动评估报告.pptx
-'data/O\'Reilly.Clojure.Programming.pdf'
-data/image001(04-23-14-53-43).png
-data/image003(04-23-14-53-43).jpg
-data/image005.png
-data/image014.jpg
-data/image015.jpg
-data/image016.jpg
-data/image017.jpg
-data/image018.jpg
-data/myWiki.tar.gz
-data/testtest
-data/x
-data/淘宝城.png
 dist.ini
 lib/Mail2Wiki.pm
 lib/Mail2Wiki/Mail.pm
 lib/Mail2Wiki/MailClient.pm
-lib/Mail2Wiki/Utils.pm
 lib/Mail2Wiki/Wiki.pm
 lib/Mail2Wiki/Wiki/MindTouch.pm
