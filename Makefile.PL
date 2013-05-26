@@ -41,7 +41,7 @@ my %WriteMakefileArgs = (
     "utf8" => 0
   },
   "TEST_REQUIRES" => {},
-  "VERSION" => "0.009",
+  "VERSION" => "0.010",
   "test" => {
     "TESTS" => ""
   }
