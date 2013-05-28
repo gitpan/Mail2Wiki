@@ -22,6 +22,7 @@ my %WriteMakefileArgs = (
   "LICENSE" => "bsd",
   "NAME" => "Mail2Wiki",
   "PREREQ_PM" => {
+    "Config::Tiny" => 0,
     "Digest::MD5" => 0,
     "Email::MIME" => 0,
     "Encode" => 0,
@@ -36,12 +37,11 @@ my %WriteMakefileArgs = (
     "Moose" => 0,
     "Net::IMAP::Client" => 0,
     "Time::Piece" => 0,
-    "YAML::XS" => 0,
     "base" => 0,
     "utf8" => 0
   },
   "TEST_REQUIRES" => {},
-  "VERSION" => "0.011",
+  "VERSION" => "0.012",
   "test" => {
     "TESTS" => ""
   }

@@ -13,6 +13,7 @@ meta-spec:
   version: 1.4
 name: Mail2Wiki
 requires:
+  Config::Tiny: 0
   Digest::MD5: 0
   Email::MIME: 0
   Encode: 0
@@ -27,7 +28,6 @@ requires:
   Moose: 0
   Net::IMAP::Client: 0
   Time::Piece: 0
-  YAML::XS: 0
   base: 0
   utf8: 0
-version: 0.011
+version: 0.012

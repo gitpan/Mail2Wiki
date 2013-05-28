@@ -6,7 +6,6 @@ README
 README.mkd
 bin/mail2wiki.pl
 config
-config.public.gpg
 dist.ini
 lib/Mail2Wiki.pm
 lib/Mail2Wiki/Mail.pm

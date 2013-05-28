@@ -1,14 +1,16 @@
-# mail settings
-mail_server : mail.alibaba-inc.com
-mail_port   : 993
-mail_user   : hz\pewiki
-mail_pass   : hellope1234
+[mail]
+server = mail.alibaba-inc.com
+port   = 993
+user   = hz\pewiki
+pass   = hellope1234
+
 
 # Wiki settings
+[wiki]
+type   = MindTouch 
+domain = x.wf.taobao.org
+user   = pewiki
+pass   = hellope1234
+prefix = PE/mail
 
-wiki_type   : MindTouch
-wiki_domain : x.wf.taobao.org
-wiki_user   : pewiki
-wiki_pass   : hellope1234
-wiki_prefix : PE/mail
-#wiki_prefix : User
+;prefix = User

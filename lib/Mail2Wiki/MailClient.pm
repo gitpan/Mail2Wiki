@@ -7,30 +7,49 @@ use Mail2Wiki::Mail;
 use Log::Any '$log';
 use utf8;
 
-has server   => ( is => 'ro', isa => 'Str', default => '127.0.0.1' );
-has port     => ( is => 'ro', isa => 'Int', default => '993' );
-has user     => ( is => 'ro', isa => 'Str', default => 'anonymouse' );
-has pass     => ( is => 'ro', isa => 'Str', default => 'None' );
-has data_dir => ( is => 'ro', isa => 'Str', default => 'data/' );
+has server          => ( is => 'ro', isa => 'Str',  default => '127.0.0.1' );
+has port            => ( is => 'ro', isa => 'Int',  default => '993' );
+has user            => ( is => 'ro', isa => 'Str',  default => 'anonymouse' );
+has pass            => ( is => 'ro', isa => 'Str',  default => 'None' );
+has data_dir        => ( is => 'ro', isa => 'Str',  default => 'data/' );
+has ssl             => ( is => 'ro', isa => 'Int',  default => 1 );
+has ssl_verify_peer => ( is => 'rw', isa => 'Bool', default => 1 );
+has ssl_ca_path => ( is => 'rw', isa => 'Str', default => '/etc/ssl/certs/' );
+has ssl_ca_file => ( is => 'rw', isa => 'Str', default => '' );
 
 has imap => (
     is      => 'ro',
     isa     => 'Net::IMAP::Client',
     lazy    => 1,
     default => sub {
-        my $self = shift;
-        $DB::single = 1;
-        my $imap = Net::IMAP::Client->new(
+        my $self               = shift;
+        my $imap_client_config = {
             server => $self->server,
             port   => $self->port,
-            ssl    => 1,
-          )
-          or $log->error(
-            " create IMAP client failed : " . $Net::IMAP::Simple::errstr )
-          and return;
+            ssl    => $self->ssl,
+        };
+        if ( $self->ssl ) {
+            $imap_client_config->{ssl_verify_peer} = $self->ssl_verify_peer;
+            if ( $self->ssl_verify_peer ) {
+                if ( $self->ssl_ca_file ) {
+                    $imap_client_config->{ssl_ca_file} = $self->ssl_ca_file;
+                }
+                elsif ( $self->ssl_ca_path ) {
+                    $imap_client_config->{ssl_ca_path} = $self->ssl_ca_path;
+                }
+                else {
+                    $log->error(
+"You must supply ssl_ca_path or ssl_ca_file for verify server"
+                    ) and exit(1);
+                }
+            }
+        }
+        my $imap = Net::IMAP::Client->new(%$imap_client_config)
+          or $log->error(" create IMAP client failed : connect failed")
+          and exit(1);
         $imap->login( $self->user, $self->pass )
           or $log->error( "Login-to MailServer failed: " . $imap->errstr )
-          and return;
+          and exit(1);
         return $imap;
     }
 );
@@ -102,5 +121,7 @@ sub _dump_mail {
     return $subject, \@file, \$content, $poster;
 }
 
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;
 

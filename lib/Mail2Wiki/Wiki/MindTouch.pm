@@ -51,7 +51,7 @@ has create_page_api => (
 has dom => (
     is      => 'ro',
     isa     => 'Mojo::DOM',
-    default => sub { Mojo::DOM->new->charset('UTF-8')->xml(0) }
+    default => sub { Mojo::DOM->new->xml(0) }
 );
 
 =head2 post(%args)
@@ -68,10 +68,14 @@ B<content>: the content of page
 
 sub post {
     my ( $self, %args ) = @_;
-    my $subject = $args{subject} or die "page subject empty !!\n";
+    my $subject = $args{subject}
+      or $log->error("page subject empty !!")
+      and return;
     my $file = ref $args{file} eq 'ARRAY' ? $args{file} : [ $args{file} ];
-    my $content = $args{content} or die "page content empty !!\n";
-    my $poster  = $args{poster}  or warn "poster is None !!\n";
+    my $content = $args{content}
+      or $log->error("page content empty !!")
+      and return;
+    my $poster = $args{poster} or $log->warn("poster is None !!");
     $self->poster($poster) if $poster;
 
     # post file
@@ -81,7 +85,6 @@ sub post {
     my %file_link;
     foreach my $f (@$file) {
 
-        #      $DB::single = 1;
         my $file_path = pop @$f;
 
         $log->debug( "post file : " . $file_path );
@@ -172,4 +175,6 @@ sub _build_title {
     _double_url_escape( $prefix . encode( 'utf8', $subject ) );
 }
 
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;
