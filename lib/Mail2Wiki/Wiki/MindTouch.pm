@@ -1,4 +1,6 @@
 package Mail2Wiki::Wiki::MindTouch;
+
+# ABSTRACT: MindTouch wiki object, subclass of Wiki, post content to mindtouch wiki
 use base 'Mail2Wiki::Wiki';
 use Moose;
 use Time::Piece;
@@ -12,13 +14,15 @@ use Digest::MD5 'md5_hex';
 use Encode;
 use utf8;
 
+
+
 has ua => (
     is      => 'ro',
     isa     => 'Mojo::UserAgent',
     default => sub { Mojo::UserAgent->new->connect_timeout(3) }
 );
 
-# https://help.mindtouch.us/01MindTouch_TCS/Developer_Guide/API_Reference/PUT%3Apages%2F%2F%7Bpageid%7D%2F%2Ffiles%2F%2F%7Bfilename%7D
+
 has create_file_api => (
     is      => 'ro',
     isa     => 'Str',
@@ -33,7 +37,7 @@ has create_file_api => (
     }
 );
 
-# https://help.mindtouch.us/index.php?title=01MindTouch_TCS/Developer_Guide/API_Reference/POST:pages%2F%2F%7Bpageid%7D%2F%2Fcontents
+
 has create_page_api => (
     is      => 'ro',
     isa     => 'Str',
@@ -48,23 +52,13 @@ has create_page_api => (
     }
 );
 
+
 has dom => (
     is      => 'ro',
     isa     => 'Mojo::DOM',
     default => sub { Mojo::DOM->new->xml(0) }
 );
 
-=head2 post(%args)
-
-post an Wiki page, if has attachement, will be also posted.
-
-=item %args
-
-B<file>: an array of filename belongs to the page
-
-B<content>: the content of page
-
-=cut
 
 sub post {
     my ( $self, %args ) = @_;
@@ -178,3 +172,69 @@ sub _build_title {
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
+
+__END__
+
+=pod
+
+=head1 NAME
+
+Mail2Wiki::Wiki::MindTouch - MindTouch wiki object, subclass of Wiki, post content to mindtouch wiki
+
+=head1 VERSION
+
+version 0.013
+
+=head1 ATTRIBUTES
+
+=head2 ua
+
+The UserAgent used to do post, a Mojo::UserAgent object
+
+=head2 create_file_api
+
+api used to post a file to a page.
+
+See L<https://help.mindtouch.us/01MindTouch_TCS/Developer_Guide/API_Reference/PUT%3Apages%2F%2F%7Bpageid%7D%2F%2Ffiles%2F%2F%7Bfilename%7D>
+
+=head2 create_page_api
+
+api used to post a page.
+
+See L<https://help.mindtouch.us/index.php?title=01MindTouch_TCS/Developer_Guide/API_Reference/POST:pages%2F%2F%7Bpageid%7D%2F%2Fcontents>
+
+=head2 dom
+
+Dom object to parse HTML mail content, a Mojo::DOM object.
+
+=head1 METHODS
+
+=head2 post(%args)
+
+post an Wiki page, if has attachement, will be also posted.
+
+=over
+
+=item %args
+
+B<file>: an array of filename belongs to the page
+
+B<content>: the content of page
+
+=back
+
+=encoding utf8
+
+=head1 AUTHOR
+
+ChinaXing(陈云星) <chen.yack@gmail.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is Copyright (c) 2013 by ChinaXing(陈云星).
+
+This is free software, licensed under:
+
+  The (three-clause) BSD License
+
+=cut

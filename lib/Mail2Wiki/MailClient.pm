@@ -1,4 +1,5 @@
 package Mail2Wiki::MailClient;
+# ABSTRACT: MailClient used to fetch mail and parse them to Mail object
 use Moose;
 use Net::IMAP::Client;
 use Email::MIME;
@@ -6,6 +7,7 @@ use File::Slurp;
 use Mail2Wiki::Mail;
 use Log::Any '$log';
 use utf8;
+
 
 has server          => ( is => 'ro', isa => 'Str',  default => '127.0.0.1' );
 has port            => ( is => 'ro', isa => 'Int',  default => '993' );
@@ -125,3 +127,30 @@ no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
 
+__END__
+
+=pod
+
+=head1 NAME
+
+Mail2Wiki::MailClient - MailClient used to fetch mail and parse them to Mail object
+
+=head1 VERSION
+
+version 0.013
+
+=encoding utf8
+
+=head1 AUTHOR
+
+ChinaXing(陈云星) <chen.yack@gmail.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is Copyright (c) 2013 by ChinaXing(陈云星).
+
+This is free software, licensed under:
+
+  The (three-clause) BSD License
+
+=cut
