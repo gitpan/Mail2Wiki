@@ -34,7 +34,7 @@ Mail2Wiki::Wiki - Wiki object an abstract class need to be subclassed
 
 =head1 VERSION
 
-version 0.013
+version 0.014
 
 =encoding utf8
 

@@ -3,6 +3,7 @@ package Mail2Wiki::MailClient;
 use Moose;
 use Net::IMAP::Client;
 use Email::MIME;
+use Email::MIME::ContentType;
 use File::Slurp;
 use Mail2Wiki::Mail;
 use Log::Any '$log';
@@ -50,7 +51,7 @@ has imap => (
           or $log->error(" create IMAP client failed : connect failed")
           and exit(1);
         $imap->login( $self->user, $self->pass )
-          or $log->error( "Login-to MailServer failed: " . $imap->errstr )
+          or $log->error( "Login-to MailServer failed: " . $imap->last_error )
           and exit(1);
         return $imap;
     }
@@ -98,13 +99,34 @@ sub _dump_mail {
             my ($part) = @_;
             return $part if $part->subparts;
 
-            if ( $part->content_type =~ m[text/html]i ) {
-                $content = $part->body_str;
+            # parse content
+            my $ct = parse_content_type( $part->content_type );
+
+            # charset may be null
+            my $charset = $ct->{attributes}->{charset};
+            $log->debug( "charset : " . ( $charset // "" ) );
+
+            # html
+            $DB::single = 1;
+            if ( ( $ct->{composite} // '' ) eq 'html' ) {
+                $log->debug("HTML");
+                $content = Encode::decode( $charset, $part->body ) and return
+                  if $charset;
+                $content = $part->body and return;
             }
-            elsif ( $part->content_type =~ m[text/plain]i ) {
-                $content_plain = $part->body_str;
+
+            # plain/text
+            if ( ( $ct->{composite} // '' ) eq 'plain' ) {
+                $log->debug("PLAIN");
+                $content_plain = Encode::decode( $charset, $part->body )
+                  and return
+                  if $charset;
+                $content_plain = $part->body and return;
             }
-            elsif ( my $filename = $part->filename =~ s/^\s+|\s+$//r ) {
+
+            # others
+            if ( my $filename = $part->filename =~ s/^\s+|\s+$//r ) {
+                $log->debug( $ct->{composite} // "" );
                 $log->debug("store file : $filename");
                 write_file( "$dir$filename", { binmode => ':raw' },
                     $part->body );
@@ -137,7 +159,7 @@ Mail2Wiki::MailClient - MailClient used to fetch mail and parse them to Mail obj
 
 =head1 VERSION
 
-version 0.013
+version 0.014
 
 =encoding utf8
 

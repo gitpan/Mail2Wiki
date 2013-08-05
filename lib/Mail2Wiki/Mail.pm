@@ -32,7 +32,7 @@ Mail2Wiki::Mail - Mail object contains file, content, subject poster
 
 =head1 VERSION
 
-version 0.013
+version 0.014
 
 =encoding utf8
 

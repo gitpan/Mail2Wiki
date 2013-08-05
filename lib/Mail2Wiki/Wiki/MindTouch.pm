@@ -183,7 +183,7 @@ Mail2Wiki::Wiki::MindTouch - MindTouch wiki object, subclass of Wiki, post conte
 
 =head1 VERSION
 
-version 0.013
+version 0.014
 
 =head1 ATTRIBUTES
 

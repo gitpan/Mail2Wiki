@@ -25,6 +25,7 @@ my %WriteMakefileArgs = (
     "Config::Tiny" => 0,
     "Digest::MD5" => 0,
     "Email::MIME" => 0,
+    "Email::MIME::ContentType" => 0,
     "Encode" => 0,
     "File::Slurp" => 0,
     "FindBin" => 0,
@@ -38,10 +39,11 @@ my %WriteMakefileArgs = (
     "Net::IMAP::Client" => 0,
     "Time::Piece" => 0,
     "base" => 0,
+    "lib" => 0,
     "utf8" => 0
   },
   "TEST_REQUIRES" => {},
-  "VERSION" => "0.013",
+  "VERSION" => "0.014",
   "test" => {
     "TESTS" => ""
   }
