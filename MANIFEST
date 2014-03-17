@@ -6,8 +6,12 @@ README
 README.mkd
 bin/mail2wiki.pl
 config
-data/srelz图片.jpg
-data/技术保障部交流外访报备说明.docx
+data/image001.jpg
+data/image002.jpg
+data/image003.jpg
+data/image004.jpg
+data/image005.jpg
+data/土豆丝传奇.doc
 dist.ini
 lib/Mail2Wiki.pm
 lib/Mail2Wiki/Mail.pm

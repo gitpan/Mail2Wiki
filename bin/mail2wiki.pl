@@ -22,7 +22,7 @@ mail2wiki.pl - binary file to bootstrap and entry the Mail2Wiki Module
 
 =head1 VERSION
 
-version 0.014
+version 0.015
 
 =head1 AUTHOR
 

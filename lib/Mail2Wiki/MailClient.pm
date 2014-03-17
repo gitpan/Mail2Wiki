@@ -92,7 +92,7 @@ sub dump {
 sub _dump_mail {
     my ( $dir, $mail ) = @_;
     my $subject = $mail->header('Subject');
-    my ($poster) = $mail->header('From') =~ m/<([^@]+)@/;
+    my ($poster) = $mail->header('From') =~ m/<?([^@]+)@/;
     my ( @file, $content, $content_plain );
     $mail->walk_parts(
         sub {
@@ -159,7 +159,7 @@ Mail2Wiki::MailClient - MailClient used to fetch mail and parse them to Mail obj
 
 =head1 VERSION
 
-version 0.014
+version 0.015
 
 =encoding utf8
 
