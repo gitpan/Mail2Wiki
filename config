@@ -1,15 +1,16 @@
-# mail settings
+[mail]
+server = xxxxx
+port   = 993
+user   = xxxxx
+pass   = xxxxx
 
-mail_server : mail.alibaba-inc.com
-mail_port   : 933
-mail_user   : user
-mail_pass   : password
 
 # Wiki settings
+[wiki]
+type   = MindTouch 
+domain = xxxxxx
+user   = wikixxx
+pass   = abcd
+prefix = mail
 
-wiki_type   : MindTouch
-wiki_domain : x.wf.taobao.org
-wiki_user   : user
-wiki_pass   : password
-#wiki_prefix : PE/mail
-wiki_prefix : User
+;prefix = User
